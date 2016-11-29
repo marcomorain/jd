@@ -1,38 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "json.h"
-
-int read_file(const char* path, char** data, long* size) {
-    
-    // TODO - mmap the file.
-    
-    FILE *f = fopen(path, "rb");
-    fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);  //same as rewind(f);
-    
-    char *string = malloc(fsize + 1);
-    fread(string, fsize, 1, f);
-    fclose(f);
-    
-    string[fsize] = 0;
-    
-    *size = fsize;
-    *data = string;
-    
-    return 0;
-}
+#include "parson.h"
 
 
 void usage() {
 }
 
-void diff(struct json_value_s* a, struct json_value_s* b)
+void diff(JSON_Value* a, JSON_Value* b, JSON_Array* differences)
 {
-    if (a->type != b->type) {
-        puts("remove a");
-        puts("insert b");
-    }
 }
 
 int main(int argc, const char * argv[]) {
@@ -41,26 +16,22 @@ int main(int argc, const char * argv[]) {
         usage();
         return EXIT_FAILURE;
     }
+    
+    JSON_Value* root = json_value_init_object();
+    JSON_Array* differences = json_value_get_array(root);
+    
+    JSON_Value* tree_a = json_parse_file(argv[1]);
+    JSON_Value* tree_b = json_parse_file(argv[2]);
+    
+    diff(tree_a, tree_b, differences);
+    
+    char* output = json_serialize_to_string(root);
+    puts("differences:");
+    puts(output);
 
-    
-    char *a, *b;
-    long size_a, size_b;
-    
-    read_file(argv[1], &a, &size_a);
-    read_file(argv[2], &b, &size_b);
-    
-    struct json_value_s* tree_a = json_parse(a, size_a);
-    struct json_value_s* tree_b = json_parse(b, size_b);
-    
-    diff(tree_a, tree_b);
-    
-    
-    puts(json_write_pretty(tree_a, "  ", "\n", 0));
-    
-    free(a);
-    free(b);
-    free(tree_a);
-    free(tree_b);
+    json_value_free(tree_a);
+    json_value_free(tree_b);
+    json_value_free(root);
     
     return 0;
 }

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4985D8391DEE4A5500082CAD /* parson.c in Sources */ = {isa = PBXBuildFile; fileRef = 4985D8371DEE4A5500082CAD /* parson.c */; };
 		49DEDF951DEB3DB6001193CD /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 49DEDF941DEB3DB6001193CD /* main.c */; };
-		49DEDF9D1DEB3EDC001193CD /* json.c in Sources */ = {isa = PBXBuildFile; fileRef = 49DEDF9B1DEB3EDC001193CD /* json.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +24,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4985D8371DEE4A5500082CAD /* parson.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parson.c; path = deps/parson/parson.c; sourceTree = "<group>"; };
+		4985D8381DEE4A5500082CAD /* parson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parson.h; path = deps/parson/parson.h; sourceTree = "<group>"; };
 		49DEDF911DEB3DB6001193CD /* jd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jd; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DEDF941DEB3DB6001193CD /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		49DEDF9B1DEB3EDC001193CD /* json.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = json.c; path = "vendor/json.h-master/json.c"; sourceTree = "<group>"; };
-		49DEDF9C1DEB3EDC001193CD /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json.h; path = "vendor/json.h-master/json.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +44,8 @@
 		49DEDF881DEB3DB6001193CD = {
 			isa = PBXGroup;
 			children = (
-				49DEDF9B1DEB3EDC001193CD /* json.c */,
-				49DEDF9C1DEB3EDC001193CD /* json.h */,
+				4985D8371DEE4A5500082CAD /* parson.c */,
+				4985D8381DEE4A5500082CAD /* parson.h */,
 				49DEDF931DEB3DB6001193CD /* jd */,
 				49DEDF921DEB3DB6001193CD /* Products */,
 			);
@@ -124,8 +124,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4985D8391DEE4A5500082CAD /* parson.c in Sources */,
 				49DEDF951DEB3DB6001193CD /* main.c in Sources */,
-				49DEDF9D1DEB3EDC001193CD /* json.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +252,7 @@
 				49DEDF9A1DEB3DB6001193CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
