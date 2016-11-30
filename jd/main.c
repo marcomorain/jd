@@ -1,8 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "parson.h"
-
 
 void usage() {
 }
@@ -55,7 +55,7 @@ void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* difference
                 
                 if (!json_value_equals(aval, bval))
                 {
-                    char buffer[1024] = {};
+					char buffer[1024] = { 0 };
                     strcat(buffer, path);
                     strcat(buffer, key);
                     strcat(buffer, "/");
