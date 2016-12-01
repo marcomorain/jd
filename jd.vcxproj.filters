@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{71a25fff-444b-4a2a-9757-27c0bd76f0e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jd\main.c">
@@ -26,5 +29,13 @@
     <ClInclude Include="deps\parson\parson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test\generated_a.json">
+      <Filter>test</Filter>
+    </None>
+    <None Include="test\generated_b.json">
+      <Filter>test</Filter>
+    </None>
   </ItemGroup>
 </Project>
