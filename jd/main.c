@@ -50,13 +50,14 @@ static void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* dif
 static void diff_object(const char* path, const JSON_Object* a, const JSON_Object* b, JSON_Array* differences)
 {
     const size_t a_count = json_object_get_count(a);
+    const size_t b_count = json_object_get_count(b);
+    
+    // For all keys in A
     for (size_t i = 0; i < a_count; i++)
     {
         const char* key = json_object_get_name(a, i);
         JSON_Value* aval = json_object_get_value(a, key);
         JSON_Value* bval = json_object_get_value(b, key);
-        
-        // TODO - keys in B not in A.
         
         if (json_value_equals(aval, bval))
         {
@@ -65,7 +66,37 @@ static void diff_object(const char* path, const JSON_Object* a, const JSON_Objec
         
         char buffer[1024] = { 0 };
         sprintf(buffer, "%s%s/", path, key);
-        diff(buffer, aval, bval, differences);
+        
+        if (!bval)
+        {
+            remove_op(differences, buffer);
+        }
+        else
+        {
+            diff(buffer, aval, bval, differences);
+        }
+        
+    }
+    
+    // For all keys in B
+    for (size_t i = 0; i < b_count; i++)
+    {
+        const char* key = json_object_get_name(b, i);
+        JSON_Value* aval = json_object_get_value(a, key);
+        JSON_Value* bval = json_object_get_value(b, key);
+        
+        // We only want to find keys in B that are not in A.
+        // All keys in A are already covered.
+        if (aval)
+        {
+            continue;
+        }
+        
+        char buffer[1024] = { 0 };
+        sprintf(buffer, "%s%s/", path, key);
+        
+        add_op(differences, buffer, bval);
+        
     }
 }
 

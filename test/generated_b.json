@@ -279,6 +279,7 @@
     "guid": "55a6d839-7256-4103-ac5c-78c5f9693d8c",
     "isActive": false,
     "balance": "$3,497.92",
+    "count": 23,
     "picture": "http://placehold.it/32x32",
     "age": 29,
     "eyeColor": "green",
@@ -291,13 +292,11 @@
     "about": "Non laborum et sunt adipisicing fugiat duis sunt. Minim magna anim dolore ut et cupidatat mollit laboris elit labore dolore Lorem cillum aliquip. Sint nisi voluptate exercitation laborum consequat. Sunt dolor exercitation eu reprehenderit.\r\n",
     "registered": "2014-02-14T01:42:26 -00:00",
     "latitude": -7.867053,
-    "longitude": -67.571546,
     "tags": [
       "adipisicing",
       "esse",
       "labore",
       "in",
-      "duis",
       "non",
       "est"
     ],
