@@ -2,18 +2,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "parson.h"
 
 void usage() {
 }
 
-void replace_op(JSON_Array* differences, const char* path, JSON_Value* with) {
-	JSON_Value* value = json_value_init_object();
-	JSON_Object* replace = json_value_get_object(value);
-	json_object_set_string(replace, "op", "replace");
-	json_object_set_string(replace, "path", path);
-	json_object_set_value(replace, "value", json_value_deep_copy(with));
-	json_array_append_value(differences, value);
+static void value_op(const char* op, JSON_Array* differences, const char* path, JSON_Value* with) {
+    JSON_Value* value = json_value_init_object();
+    JSON_Object* replace = json_value_get_object(value);
+    json_object_set_string(replace, "op", op);
+    json_object_set_string(replace, "path", path);
+    if (with)
+    {
+        json_object_set_value(replace, "value", json_value_deep_copy(with));
+    }
+    json_array_append_value(differences, value);
+}
+
+static void replace_op(JSON_Array* differences, const char* path, JSON_Value* with)
+{
+    value_op("replace", differences, path, with);
+}
+
+static void add_op(JSON_Array* differences, const char* path, JSON_Value* with)
+{
+    value_op("add", differences, path, with);
+}
+
+static void remove_op(JSON_Array* differences, const char* path)
+{
+    value_op("remove", differences, path, 0);
 }
 
 static size_t smin(size_t a, size_t b)
@@ -26,7 +45,66 @@ static size_t smax(size_t a, size_t b)
 	return a < b ? b : a;
 }
 
-void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* differences)
+static void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* differences);
+
+static void diff_object(const char* path, const JSON_Object* a, const JSON_Object* b, JSON_Array* differences)
+{
+    const size_t a_count = json_object_get_count(a);
+    for (size_t i = 0; i < a_count; i++)
+    {
+        const char* key = json_object_get_name(a, i);
+        JSON_Value* aval = json_object_get_value(a, key);
+        JSON_Value* bval = json_object_get_value(b, key);
+        
+        // TODO - keys in B not in A.
+        
+        if (json_value_equals(aval, bval))
+        {
+            continue;
+        }
+        
+        char buffer[1024] = { 0 };
+        sprintf(buffer, "%s%s/", path, key);
+        diff(buffer, aval, bval, differences);
+    }
+}
+
+static void diff_array(const char* path, const JSON_Array* a, const JSON_Array* b, JSON_Array* differences)
+{
+    const size_t a_count = json_array_get_count(a);
+    const size_t b_count = json_array_get_count(b);
+    const size_t end = smax(a_count, b_count);
+    
+    for (size_t i = 0; i < end; i++)
+    {
+        JSON_Value* aval = json_array_get_value(a, i);
+        JSON_Value* bval = json_array_get_value(b, i);
+        
+        if (json_value_equals(aval, bval))
+        {
+            continue;
+        }
+        
+        char buffer[1024] = { 0 };
+        sprintf(buffer, "%s%lu/", path, i);
+        
+        if (!aval)
+        {
+            add_op(differences, buffer, bval);
+        } else if (!bval)
+        {
+            remove_op(differences, buffer);
+        }
+        else
+        {
+            diff(buffer, aval, bval, differences);
+        }
+        
+    }
+
+}
+
+static void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* differences)
 {
 	if (json_value_equals(a, b))
 	{
@@ -54,53 +132,21 @@ void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* difference
 
 	case JSONObject:
 	{
-		const JSON_Object* ao = json_value_get_object(a);
-		const JSON_Object* bo = json_value_get_object(b);
-		const size_t a_count = json_object_get_count(ao);
-		for (size_t i = 0; i < a_count; i++)
-		{
-			const char* key = json_object_get_name(ao, i);
-			JSON_Value* aval = json_object_get_value(ao, key);
-			JSON_Value* bval = json_object_get_value(bo, key);
-
-			// TODO - keys in B not in A.
-
-			if (!json_value_equals(aval, bval))
-			{
-				char buffer[1024] = { 0 };
-				sprintf(buffer, "%s%s/", path, key);
-				diff(buffer, aval, bval, differences);
-			}
-		}
+        diff_object(path, json_value_get_object(a), json_value_get_object(b), differences);
 		break;
 	}
 
 	case JSONArray:
 	{
-		const JSON_Array* a_array = json_value_get_array(a);
-		const JSON_Array* b_array = json_value_get_array(b);
-
-		const size_t a_count = json_array_get_count(a_array);
-		const size_t b_count = json_array_get_count(b_array);
-		const size_t end = smax(a_count, b_count);
-
-		for (size_t i = 0; i < end; i++)
-		{
-			JSON_Value* aval = json_array_get_value(a_array, i);
-			JSON_Value* bval = json_array_get_value(b_array, i);
-
-			if (json_value_equals(aval, bval))
-			{
-				continue;
-			}
-
-			char buffer[1024] = { 0 };
-			sprintf(buffer, "%s%d/", path, i);
-			diff(buffer, aval, bval, differences);
-		}
-		break;
-	}
-	}
+        diff_array(path, json_value_get_array(a), json_value_get_array(b), differences);
+        break;
+    }
+            
+    default:
+    {
+        assert(0);
+    }
+    }
 }
 
 int main(int argc, const char * argv[]) {
@@ -118,9 +164,9 @@ int main(int argc, const char * argv[]) {
 
 	diff("/", tree_a, tree_b, differences);
 
-	char* output = json_serialize_to_string(root);
-	puts("differences:");
+	char* output = json_serialize_to_string_pretty(root);
 	puts(output);
+    json_free_serialized_string(output);
 
 	json_value_free(root);
 	json_value_free(tree_a);

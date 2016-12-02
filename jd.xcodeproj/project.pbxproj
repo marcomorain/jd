@@ -24,6 +24,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		497A47411DF23B6500B85DA4 /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test; sourceTree = "<group>"; };
 		4985D8371DEE4A5500082CAD /* parson.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parson.c; path = deps/parson/parson.c; sourceTree = "<group>"; };
 		4985D8381DEE4A5500082CAD /* parson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parson.h; path = deps/parson/parson.h; sourceTree = "<group>"; };
 		49DEDF911DEB3DB6001193CD /* jd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jd; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +45,7 @@
 		49DEDF881DEB3DB6001193CD = {
 			isa = PBXGroup;
 			children = (
+				497A47411DF23B6500B85DA4 /* test */,
 				4985D8371DEE4A5500082CAD /* parson.c */,
 				4985D8381DEE4A5500082CAD /* parson.h */,
 				49DEDF931DEB3DB6001193CD /* jd */,

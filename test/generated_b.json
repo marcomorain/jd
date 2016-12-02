@@ -84,6 +84,10 @@
       {
         "id": 2,
         "name": "Socorro Coffey"
+      },
+      {
+      "id": 3,
+       "name": "Joe Extra"
       }
     ],
     "greeting": "Hello, Navarro Huffman! You have 5 unread messages.",
@@ -301,10 +305,6 @@
       {
         "id": 0,
         "name": "Duke Fisher"
-      },
-      {
-        "id": 1,
-        "name": "Schneider Scott"
       },
       {
         "id": 2,
