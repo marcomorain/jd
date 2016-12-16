@@ -123,7 +123,8 @@ static void diff_array(const char* path, const JSON_Array* a, const JSON_Array* 
         if (!aval)
         {
             add_op(differences, buffer, bval);
-        } else if (!bval)
+        }
+		else if (!bval)
         {
             remove_op(differences, buffer);
         }
