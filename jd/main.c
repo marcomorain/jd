@@ -181,11 +181,37 @@ static void diff(const char* path, JSON_Value* a, JSON_Value* b, JSON_Array* dif
     }
 }
 
-int main(int argc, const char * argv[]) {
+static int check_arg(const char* arg, const char* short_name, const char* long_name)
+{
+	return (0 == strcmp(short_name, arg)) ||
+		   (0 == strcmp(long_name, arg));
+}
 
-	if (argc != 3) {
+enum
+{
+	// From diff(1) man page:
+	// Exit status is 0 if inputs are the same, 1 if different, 2 if trouble.
+
+	JD_STATUS_SAME = 0,
+	JD_STATUS_DIFFERENT = 1,
+	JD_STATUS_TROUBLE = 2
+};
+
+int main(int argc, const char * argv[])
+{
+	for (int i = 1; i < argc; i++)
+	{
+		if (check_arg(argv[i], "-h", "--help"))
+		{
+			usage();
+			return EXIT_SUCCESS;
+		}
+	}
+
+	if (argc != 3)
+	{
 		usage();
-		return EXIT_FAILURE;
+		return JD_STATUS_TROUBLE;
 	}
 
 	JSON_Value* root = json_value_init_array();
@@ -196,6 +222,12 @@ int main(int argc, const char * argv[]) {
 
 	diff("/", tree_a, tree_b, differences);
 
+	// Print nothing and return success if the documents were the same.
+	if (json_array_get_count(differences) == 0)
+	{
+		return JD_STATUS_SAME;
+	}
+
 	char* output = json_serialize_to_string_pretty(root);
 	puts(output);
     json_free_serialized_string(output);
@@ -204,5 +236,5 @@ int main(int argc, const char * argv[]) {
 	json_value_free(tree_a);
 	json_value_free(tree_b);
 
-	return 0;
+	return JD_STATUS_DIFFERENT;
 }
